@@ -2,6 +2,8 @@ package com.chahye.datatransferjava;
 
 import android.os.Bundle;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -15,6 +17,11 @@ import com.chahye.datatransferjava.databinding.FragmentFirstBinding;
 
 public class FirstFragment extends Fragment {
     private FragmentFirstBinding binding;
+
+    ActivityResultLauncher<String> mGetContent = registerForActivityResult(new ActivityResultContracts.GetContent(),
+            uri -> {
+                binding.imageView.setImageURI(uri);
+            });
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -32,6 +39,10 @@ public class FirstFragment extends Fragment {
             result.putString("data", "hello");
             getParentFragmentManager().setFragmentResult("requestKey", result);
             Navigation.findNavController(view).navigate(R.id.action_firstFragment_to_secondFragment);
+        });
+
+        binding.buttonPhoto.setOnClickListener(v -> {
+            mGetContent.launch("image/*");
         });
     }
 
