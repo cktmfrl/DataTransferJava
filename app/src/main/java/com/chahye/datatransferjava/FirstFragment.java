@@ -1,5 +1,6 @@
 package com.chahye.datatransferjava;
 
+import android.Manifest;
 import android.os.Bundle;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -12,16 +13,28 @@ import androidx.navigation.Navigation;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.chahye.datatransferjava.databinding.FragmentFirstBinding;
 
 public class FirstFragment extends Fragment {
     private FragmentFirstBinding binding;
 
-    ActivityResultLauncher<String> mGetContent = registerForActivityResult(new ActivityResultContracts.GetContent(),
-            uri -> {
+    // https://developer.android.com/training/basics/intents/result#java
+    private ActivityResultLauncher<String> mGetContent = registerForActivityResult(
+            new ActivityResultContracts.GetContent(), uri -> {
                 binding.imageView.setImageURI(uri);
-            });
+            }
+    );
+
+    // https://developer.android.com/training/permissions/requesting
+    private ActivityResultLauncher<String> requestPermissionLauncher = registerForActivityResult(
+            new ActivityResultContracts.RequestPermission(), isGranted -> {
+                if (isGranted) {
+                    Toast.makeText(requireContext(), "성공", Toast.LENGTH_SHORT).show();
+                }
+            }
+    );
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -43,6 +56,10 @@ public class FirstFragment extends Fragment {
 
         binding.buttonPhoto.setOnClickListener(v -> {
             mGetContent.launch("image/*");
+        });
+
+        binding.buttonPermission.setOnClickListener(v -> {
+            requestPermissionLauncher.launch(Manifest.permission.ACCESS_COARSE_LOCATION);
         });
     }
 
