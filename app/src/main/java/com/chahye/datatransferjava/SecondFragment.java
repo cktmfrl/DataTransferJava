@@ -1,7 +1,10 @@
 package com.chahye.datatransferjava;
 
+import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -16,6 +19,14 @@ import com.chahye.datatransferjava.databinding.FragmentSecondBinding;
 
 public class SecondFragment extends Fragment {
     private FragmentSecondBinding binding;
+
+    // https://developer.android.com/training/basics/intents/result#java
+    private ActivityResultLauncher<Intent> mStartForResult  = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(), result -> {
+                String message = result.getData().getStringExtra("message");
+                Toast.makeText(requireContext(), "message: " + message, Toast.LENGTH_SHORT).show();
+            }
+    );
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -35,6 +46,12 @@ public class SecondFragment extends Fragment {
 
         binding.button.setOnClickListener(v -> {
             Navigation.findNavController(view).navigate(R.id.action_secondFragment_to_firstFragment);
+        });
+
+        binding.buttonResult.setOnClickListener(v -> {
+            Intent intent = new Intent(requireContext(), ResultActivity.class);
+            intent.putExtra("message", "Hello~ ResultActivity");
+            mStartForResult.launch(intent);
         });
     }
 
