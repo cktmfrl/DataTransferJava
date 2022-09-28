@@ -28,10 +28,26 @@ public class FirstFragment extends Fragment {
     );
 
     // https://developer.android.com/training/permissions/requesting
-    private ActivityResultLauncher<String> requestPermissionLauncher = registerForActivityResult(
-            new ActivityResultContracts.RequestPermission(), isGranted -> {
-                if (isGranted) {
-                    Toast.makeText(requireContext(), "성공", Toast.LENGTH_SHORT).show();
+//    private ActivityResultLauncher<String> requestPermissionLauncher = registerForActivityResult(
+//            new ActivityResultContracts.RequestPermission(), isGranted -> {
+//                if (isGranted) {
+//                    Toast.makeText(requireContext(), "성공", Toast.LENGTH_SHORT).show();
+//                }
+//            }
+//    );
+
+    // https://developer.android.com/training/location/permissions
+    private ActivityResultLauncher<String[]> requestPermissionLauncher = registerForActivityResult(
+            new ActivityResultContracts.RequestMultiplePermissions(), result -> {
+                Boolean coarseLocationGranted = result.get(Manifest.permission.ACCESS_COARSE_LOCATION);
+                Boolean writeStorageGranted = result.get(Manifest.permission.READ_EXTERNAL_STORAGE);
+
+                if (coarseLocationGranted != null && coarseLocationGranted) {
+                    Toast.makeText(requireContext(), "ACCESS_COARSE_LOCATION 성공", Toast.LENGTH_SHORT).show();
+                }
+
+                if (writeStorageGranted != null && writeStorageGranted) {
+                    Toast.makeText(requireContext(), "READ_EXTERNAL_STORAGE 성공", Toast.LENGTH_SHORT).show();
                 }
             }
     );
@@ -59,7 +75,11 @@ public class FirstFragment extends Fragment {
         });
 
         binding.buttonPermission.setOnClickListener(v -> {
-            requestPermissionLauncher.launch(Manifest.permission.ACCESS_COARSE_LOCATION);
+            //requestPermissionLauncher.launch(Manifest.permission.ACCESS_COARSE_LOCATION);
+            requestPermissionLauncher.launch(new String[] {
+                    Manifest.permission.ACCESS_COARSE_LOCATION,
+                    Manifest.permission.READ_EXTERNAL_STORAGE
+            });
         });
     }
 
