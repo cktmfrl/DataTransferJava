@@ -9,6 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
+import androidx.navigation.fragment.NavHostFragment;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -45,7 +46,8 @@ public class SecondFragment extends Fragment {
         });
 
         binding.button.setOnClickListener(v -> {
-            Navigation.findNavController(view).navigate(R.id.action_secondFragment_to_firstFragment);
+            //Navigation.findNavController(view).navigate(R.id.action_secondFragment_to_firstFragment);
+            NavHostFragment.findNavController(SecondFragment.this).popBackStack();
         });
 
         binding.buttonResult.setOnClickListener(v -> {
